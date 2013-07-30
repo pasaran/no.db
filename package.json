@@ -1,0 +1,22 @@
+{
+    "author": {
+        "name": "Sergey Nikitin",
+        "email": "nik.pasaran@gmail.com",
+        "url": "https://github.com/pasaran"
+    },
+    "name": "no.db",
+    "description": "Simple wrapper for IndexedDB",
+    "version": "0.0.1",
+    "homepage": "https://github.com/pasaran/no.db",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/pasaran/no.db.git"
+    },
+    "dependencies": {
+        "nommon": "0.0.23"
+    },
+    "files": [
+        "no.db.js"
+    ]
+}
+
