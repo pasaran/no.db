@@ -18,25 +18,29 @@ no.DB = function(id, version) {
 //  ---------------------------------------------------------------------------------------------------------------  //
 
 no.DB.prototype.init = function(models_ids) {
+    this.models_ids = models_ids;
+
     var promise = new no.Promise();
 
     var that = this;
 
-    idb.open(this.id, this.version)
-        .onupgradeneeded(function() {
-            var db = this.result;
+    var req = idb.open(this.id, this.version);
 
-            for (var i = 0, l = models_ids.length; i < l; i++) {
-                try {
-                    db.createObjectStore( models_ids[i] );
-                } catch (e) {};
-            }
-        })
-        .onsuccess(function() {
-            var db = that.db = this.result;
+    req.onupgradeneeded = function() {
+        var db = this.result;
 
-            promise.resolve(db);
-        });
+        var items = Object.keys(models_ids);
+        for (var i = 0, l = items.length; i < l; i++) {
+            try {
+                db.createObjectStore( items[i] );
+            } catch (e) {};
+        }
+    };
+    req.onsuccess = function() {
+        var db = that.db = this.result;
+
+        promise.resolve(db);
+    };
 
     return promise;
 };
@@ -46,13 +50,17 @@ no.DB.prototype.init = function(models_ids) {
 no.DB.prototype.set = function(model_id, key, data) {
     var promise = new no.Promise();
 
+    if ( !this.models_ids[model_id] ) {
+        return promise.reject();
+    }
+
     var object_store = this.db.transaction(model_id, 'readwrite').objectStore(model_id);
 
-    object_store
-        .put(data, key)
-            .onsuccess(function() {
-                promise.resolve();
-            });
+    var req = object_store.put(data, key);
+
+    req.onsuccess = function() {
+        promise.resolve();
+    };
 
     return promise;
 };
