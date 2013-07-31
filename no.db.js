@@ -82,7 +82,7 @@ no.DB.prototype.getAll = function(model_id) {
 
     var object_store = this.db.transaction(model_id).objectStore(model_id);
 
-    objectStore.openCursor().onsuccess = function() {
+    object_store.openCursor().onsuccess = function() {
         var cursor = this.result;
         if (cursor) {
             result[ cursor.key ] = cursor.value;
